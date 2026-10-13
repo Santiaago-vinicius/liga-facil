@@ -1,0 +1,34 @@
+:root {
+  --lf-bg: #0b0f14;
+  --lf-surface: #121a24;
+  --lf-border: #1f2a37;
+  --lf-green: #16a34a;
+  --lf-green-dark: #0f5132;
+  --lf-blue: #1e3a8a;
+  --lf-text: #e5e7eb;
+  --lf-muted: #9ca3af;
+}
+
+body {
+  background: var(--lf-bg);
+  color: var(--lf-text);
+  min-height: 100vh;
+}
+
+.lf-card {
+  background: var(--lf-surface);
+  border: 1px solid var(--lf-border);
+  border-radius: 12px;
+}
+
+.btn-lf {
+  background: var(--lf-green);
+  border-color: var(--lf-green);
+  color: #fff;
+}
+
+.btn-lf:hover {
+  background: var(--lf-green-dark);
+  border-color: var(--lf-green-dark);
+  color: #fff;
+}
