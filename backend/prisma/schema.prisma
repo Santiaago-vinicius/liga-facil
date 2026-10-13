@@ -62,6 +62,10 @@ model User {
   teams        Team[]
   tournaments  Tournament[]
   memberships  TeamPlayer[]
+  resetTokenHash    String?
+  resetTokenExpires DateTime?
+  resetAttempts     Int       @default(0)
+
 }
 
 model Team {
