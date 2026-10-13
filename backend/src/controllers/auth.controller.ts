@@ -41,3 +41,17 @@ export async function getMe(_req: Request, res: Response) {
 export async function updateMe(req: Request, res: Response) {
   res.json(await service.updateMe(res.locals.userId, updateSchema.parse(req.body)));
 }
+
+export async function forgotPassword(req: Request, res: Response) {
+  const data = z.object({ email }).parse(req.body);
+  await service.forgotPassword(data.email);
+  res.json({ message: 'Se o e-mail estiver cadastrado, você receberá um código.' });
+}
+
+export async function resetPassword(req: Request, res: Response) {
+  const data = z
+    .object({ email, code: z.string().regex(/^\d{6}$/, 'O código tem 6 números'), password })
+    .parse(req.body);
+  await service.resetPassword(data.email, data.code, data.password);
+  res.json({ message: 'Senha alterada! Faça login com a nova senha.' });
+}

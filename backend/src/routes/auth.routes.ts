@@ -7,3 +7,5 @@ authRoutes.post('/auth/register', c.register);
 authRoutes.post('/auth/login', c.login);
 authRoutes.get('/users/me', auth, c.getMe);
 authRoutes.put('/users/me', auth, c.updateMe);
+authRoutes.post('/auth/forgot-password', c.forgotPassword);
+authRoutes.post('/auth/reset-password', c.resetPassword);
