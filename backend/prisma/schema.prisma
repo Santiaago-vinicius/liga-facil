@@ -1,0 +1,171 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Modality {
+  FUTSAL
+  FUT7
+  FUT11
+  AREIA
+}
+
+enum Format {
+  PONTOS_CORRIDOS
+  MATA_MATA
+  GRUPOS_MATA_MATA
+}
+
+enum EnrollmentStatus {
+  PENDENTE
+  ACEITA
+  RECUSADA
+}
+
+enum MatchStatus {
+  AGENDADO
+  EM_ANDAMENTO
+  FINALIZADO
+}
+
+enum Stage {
+  LIGA
+  GRUPOS
+  OITAVAS
+  QUARTAS
+  SEMI
+  FINAL
+  OUTRA
+}
+
+enum EventType {
+  GOL
+  ASSISTENCIA
+  AMARELO
+  VERMELHO
+}
+
+model User {
+  id           String       @id @default(uuid())
+  name         String
+  email        String       @unique
+  phone        String       @unique
+  passwordHash String
+  isPlayer     Boolean      @default(false)
+  isOrganizer  Boolean      @default(false)
+  createdAt    DateTime     @default(now())
+  teams        Team[]
+  tournaments  Tournament[]
+  memberships  TeamPlayer[]
+}
+
+model Team {
+  id          String       @id @default(uuid())
+  name        String
+  logoUrl     String?
+  ownerId     String
+  owner       User         @relation(fields: [ownerId], references: [id])
+  players     TeamPlayer[]
+  enrollments Enrollment[]
+}
+
+model TeamPlayer {
+  id          String       @id @default(uuid())
+  teamId      String
+  team        Team         @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  userId      String?
+  user        User?        @relation(fields: [userId], references: [id])
+  name        String
+  number      Int?
+  isCaptain   Boolean      @default(false)
+  lineups     Lineup[]
+  events      MatchEvent[]
+  suspensions Suspension[]
+}
+
+model Tournament {
+  id                 String       @id @default(uuid())
+  name               String
+  modality           Modality
+  format             Format
+  slots              Int
+  homeAndAway        Boolean      @default(false)
+  groupsCount        Int?
+  qualifiersPerGroup Int?
+  tiebreakers        String[]
+  yellowLimit        Int          @default(3)
+  redSuspension      Int          @default(1)
+  organizerId        String
+  organizer          User         @relation(fields: [organizerId], references: [id])
+  enrollments        Enrollment[]
+  matches            Match[]
+  createdAt          DateTime     @default(now())
+}
+
+model Enrollment {
+  id           String           @id @default(uuid())
+  tournamentId String
+  tournament   Tournament       @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  teamId       String
+  team         Team             @relation(fields: [teamId], references: [id])
+  status       EnrollmentStatus @default(PENDENTE)
+  groupName    String?
+
+  @@unique([tournamentId, teamId])
+}
+
+model Match {
+  id              String       @id @default(uuid())
+  tournamentId    String
+  tournament      Tournament   @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  stage           Stage
+  round           Int
+  groupName       String?
+  homeTeamId      String?
+  awayTeamId      String?
+  homeScore       Int          @default(0)
+  awayScore       Int          @default(0)
+  penaltyWinnerId String?
+  date            DateTime?
+  location        String?
+  status          MatchStatus  @default(AGENDADO)
+  lineups         Lineup[]
+  events          MatchEvent[]
+}
+
+model Lineup {
+  id           String     @id @default(uuid())
+  matchId      String
+  match        Match      @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  teamId       String
+  teamPlayerId String
+  teamPlayer   TeamPlayer @relation(fields: [teamPlayerId], references: [id])
+  position     String
+
+  @@unique([matchId, teamPlayerId])
+}
+
+model MatchEvent {
+  id           String     @id @default(uuid())
+  matchId      String
+  match        Match      @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  teamId       String
+  teamPlayerId String
+  teamPlayer   TeamPlayer @relation(fields: [teamPlayerId], references: [id])
+  type         EventType
+  createdAt    DateTime   @default(now())
+}
+
+model Suspension {
+  id             String     @id @default(uuid())
+  tournamentId   String
+  teamPlayerId   String
+  teamPlayer     TeamPlayer @relation(fields: [teamPlayerId], references: [id])
+  gamesRemaining Int
+  reason         String
+}
