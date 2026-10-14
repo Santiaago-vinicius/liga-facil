@@ -26,3 +26,23 @@ export function errorMessage(err: unknown) {
   if (axios.isAxiosError(err)) return err.response?.data?.message ?? 'Não foi possível conectar ao servidor';
   return 'Erro inesperado';
 }
+
+export const fetcher = (url: string) => api.get(url).then((r) => r.data);
+
+export type Team = {
+  id: string;
+  name: string;
+  logoUrl: string | null;
+  _count?: { players: number };
+};
+
+export type TeamPlayer = {
+  id: string;
+  name: string;
+  number: number | null;
+  isCaptain: boolean;
+  userId: string | null;
+  user: { email: string } | null;
+};
+
+export type TeamDetail = Team & { players: TeamPlayer[] };
