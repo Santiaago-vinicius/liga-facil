@@ -7,6 +7,7 @@ import TeamLogo from '@/components/TeamLogo';
 import { api, errorMessage, fetcher, Team } from '@/lib/api';
 import { resizeImage } from '@/lib/image';
 import { useUser } from '@/lib/useUser';
+import OpenTournaments from '@/components/OpenTournaments';
 
 export default function Jogador() {
   const { user } = useUser();
@@ -90,7 +91,7 @@ export default function Jogador() {
         )}
 
         <h3 className="fw-bold mt-5 mb-3">Campeonatos abertos</h3>
-        <p style={{ color: 'var(--lf-muted)' }}>Os campeonatos criados pelos organizadores aparecerão aqui (Fase 4).</p>
+        <OpenTournaments teams={teams ?? []} />
       </main>
     </>
   );

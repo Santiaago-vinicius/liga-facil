@@ -5,6 +5,7 @@ import { ZodError } from 'zod';
 import { authRoutes } from './routes/auth.routes';
 import { AppError } from './lib/errors';
 import { teamRoutes } from './routes/team.routes';
+import { tournamentRoutes } from './routes/tournament.routes';
 
 const app = express();
 app.use(cors({ origin: process.env.FRONTEND_URL }));
@@ -27,3 +28,5 @@ app.listen(port, () => console.log(`API em http://localhost:${port}`));
 
 app.use(authRoutes);
 app.use(teamRoutes);
+app.use(teamRoutes);
+app.use(tournamentRoutes);
