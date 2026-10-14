@@ -4,10 +4,12 @@ import cors from 'cors';
 import { ZodError } from 'zod';
 import { authRoutes } from './routes/auth.routes';
 import { AppError } from './lib/errors';
+import { teamRoutes } from './routes/team.routes';
 
 const app = express();
 app.use(cors({ origin: process.env.FRONTEND_URL }));
 app.use(express.json());
+app.use(express.json({ limit: '1mb' }));
 
 app.get('/health', (_req, res) => res.json({ ok: true }));
 app.use(authRoutes);
@@ -22,3 +24,6 @@ app.use(errorHandler);
 
 const port = Number(process.env.PORT) || 3333;
 app.listen(port, () => console.log(`API em http://localhost:${port}`));
+
+app.use(authRoutes);
+app.use(teamRoutes);
