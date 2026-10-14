@@ -50,6 +50,12 @@ enum EventType {
   VERMELHO
 }
 
+enum TournamentStatus {
+  INSCRICOES
+  EM_ANDAMENTO
+  FINALIZADO
+}
+
 model User {
   id           String       @id @default(uuid())
   name         String
@@ -109,6 +115,7 @@ model Tournament {
   enrollments        Enrollment[]
   matches            Match[]
   createdAt          DateTime     @default(now())
+  status             TournamentStatus @default(INSCRICOES)
 }
 
 model Enrollment {
