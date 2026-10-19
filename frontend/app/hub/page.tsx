@@ -4,7 +4,16 @@ import Navbar from '@/components/Navbar';
 import { useUser } from '@/lib/useUser';
 
 export default function Hub() {
-  const { user, isLoading } = useUser();
+  const { user, isLoading, error } = useUser();
+  if (error && !user) {
+    return (
+      <main className="container py-5 text-center">
+        <div className="alert alert-warning d-inline-block">
+          O servidor está demorando para responder. Aguarde alguns segundos e recarregue a página.
+        </div>
+      </main>
+    );
+  }
   if (isLoading || !user) return <div className="text-center mt-5"><div className="spinner-border text-success" /></div>;
 
   return (
