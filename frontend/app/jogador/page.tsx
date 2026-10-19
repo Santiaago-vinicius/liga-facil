@@ -11,7 +11,7 @@ import OpenTournaments from '@/components/OpenTournaments';
 
 export default function Jogador() {
   const { user } = useUser();
-  const { data: teams, mutate } = useSWR<Team[]>(user ? '/teams' : null, fetcher);
+  const { data: teams, error: erroTimes, mutate } = useSWR<Team[]>(user ? '/teams' : null, fetcher);
   const [aberto, setAberto] = useState(false);
   const [name, setName] = useState('');
   const [logo, setLogo] = useState<string | null>(null);
@@ -70,7 +70,9 @@ export default function Jogador() {
           </form>
         )}
 
-        {!teams ? (
+        {erroTimes ? (
+          <div className="alert alert-danger">{errorMessage(erroTimes)}</div>
+        ) : !teams ? (
           <div className="spinner-border text-success" />
         ) : teams.length === 0 ? (
           <p style={{ color: 'var(--lf-muted)' }}>Você ainda não criou nenhum time.</p>

@@ -1,6 +1,7 @@
 'use client';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
 import useSWR from 'swr';
 import { api, clearSession, User } from './api';
 
@@ -11,11 +12,12 @@ export function useUser() {
   );
 
   useEffect(() => {
-    if (error) {
+    // Só desloga quando o token é inválido; se a API estiver acordando, não perde a sessão
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
       clearSession();
       router.replace('/login');
     }
   }, [error, router]);
 
-  return { user: data, isLoading, mutate };
+  return { user: data, isLoading, error, mutate };
 }
